@@ -35,6 +35,9 @@ public enum TestResource
     MERGE_A_ZIP("/net/minecraftforge/gradle/merge/a.zip"),
     MERGE_B_ZIP("/net/minecraftforge/gradle/merge/b.zip"),
     MERGE_EXPECTED_ZIP("/net/minecraftforge/gradle/merge/expected.zip"),
+    MERGE_CLIENT_JAR("/net/minecraftforge/gradle/merge/client.jar"),
+    MERGE_SERVER_JAR("/net/minecraftforge/gradle/merge/server.jar"),
+    MERGE_EXPECTED_JAR("/net/minecraftforge/gradle/merge/merged.jar"),
     MOD_WITH_AT("/net/minecraftforge/gradle/at/modWithAt.jar"),
     ORG_EXAMPLE_EXAMPLE_SRC_JAR("/net/minecraftforge/gradle/src/org-example-Example.zip"),;
 

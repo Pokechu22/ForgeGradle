@@ -51,12 +51,23 @@ public class TestMergeJars extends TaskTest<MergeJars>
     }
 
     @Test
-    public void runTask() throws IOException
+    public void testResourceZips() throws IOException
     {
-        File a = TestResource.MERGE_A_ZIP.getFile(temporaryFolder);
-        File b = TestResource.MERGE_B_ZIP.getFile(temporaryFolder);
-        File out = temporaryFolder.newFile("out.jar");
-        File expected = TestResource.MERGE_EXPECTED_ZIP.getFile(temporaryFolder);
+        test(TestResource.MERGE_A_ZIP, TestResource.MERGE_B_ZIP, TestResource.MERGE_EXPECTED_ZIP, "resource");
+    }
+
+    @Test
+    public void testJars() throws IOException
+    {
+        test(TestResource.MERGE_CLIENT_JAR, TestResource.MERGE_SERVER_JAR, TestResource.MERGE_EXPECTED_JAR, "code");
+    }
+
+    private void test(TestResource client, TestResource server, TestResource expectedRes, String name) throws IOException
+    {
+        File a = client.getFile(temporaryFolder);
+        File b = server.getFile(temporaryFolder);
+        File out = temporaryFolder.newFile(name + "-out.jar");
+        File expected = expectedRes.getFile(temporaryFolder);
 
         MergeJars mergeJars = getTask(MergeJars.class);
         mergeJars.setClient(fileClosure(a));
@@ -77,6 +88,13 @@ public class TestMergeJars extends TaskTest<MergeJars>
             // since we're assuming we don't merge directory entries, there should be none at all
             // we should either have all of them or none
             Assert.assertEquals(0, outJar.stream().filter(it -> !isFile(it)).count());
+
+            // Check tha the contents match
+            expectedJar.stream().filter(TestMergeJars::isFile).forEach(expectedEntry -> {
+                JarEntry outEntry = outJar.getJarEntry(expectedEntry.getName());
+                Assert.assertEquals("Expected " + expectedEntry.getName() + " entries to match",
+                        Long.toHexString(expectedEntry.getCrc()), Long.toHexString(outEntry.getCrc()));
+            });
         }
     }
 
